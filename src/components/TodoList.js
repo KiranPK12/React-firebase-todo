@@ -1,4 +1,4 @@
-import Re from "react";
+import React from "react";
 import {
   HStack,
   VStack,
@@ -7,14 +7,45 @@ import {
   StackDivider,
   Spacer,
   Badge,
+  Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import { FaTrash } from "react-icons/fa";
 import { useGlobalContext } from "../context";
-
+import { doc, deleteDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 const TodoList = () => {
-  const { state: todos, removeItem } = useGlobalContext();  
+  const { todolist: todos, loading } = useGlobalContext();
+  const toast = useToast();
 
+  const deleteTodo = async (id) => {
+    try {
+      await deleteDoc(doc(db, "todolist", id));
+      toast({
+        title: "Todo deleted.",
+        status: "info",
+        position: "top",
+        duration: 2000,
+        isClosable: true,
+      });
+      return;
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Spinner
+        thickness="4px"
+        speed="0.65s"
+        emptyColor="gray.200"
+        color="blue.500"
+        size="xl"
+      />
+    );
+  }
 
   if (!todos.length) {
     return (
@@ -36,7 +67,6 @@ const TodoList = () => {
       maxW={{ base: "90vw", sm: "80vw", lg: "50vw", xl: "40vw" }}
       alignItems="stretch"
     >
-  
       {todos.map((item) => {
         const { id, body } = item;
         return (
@@ -51,7 +81,7 @@ const TodoList = () => {
                 color: "white",
               }}
               onClick={() => {
-                removeItem(id);
+                deleteTodo(id);
               }}
             />
           </HStack>

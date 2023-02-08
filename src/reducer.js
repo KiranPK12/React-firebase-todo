@@ -5,11 +5,8 @@ const reducer = (state,action) => {
       return item.id !== action.payload
     })
   }
-  if(action.type==='ADD_ITEM'){
-    console.log('added ');
-  }
   if(action.type==='LOADING'){
-    return action.payload
+    return {loading:false,todolist:action.payload}
   }
 }
 

@@ -1,18 +1,21 @@
 import React from "react";
-import { Heading, VStack, IconButton } from "@chakra-ui/react";
+import { Heading, VStack, IconButton , useColorMode } from "@chakra-ui/react";
 import AddTodo from "./components/AddTodo";
 import TodoList from "./components/TodoList";
 import { FaSun, FaMoon } from "react-icons/fa";
 
 const App = () => {
   
+  const { colorMode, toggleColorMode } = useColorMode()
+
     return (
     <VStack p={4}>
       <IconButton
-        icon={<FaSun />}
+        icon={ colorMode === 'light' ? <FaMoon/> : <FaSun/>}
         isRound="true"
         size="lg"
         alignSelf={"flex-end"}
+        onClick={toggleColorMode}
       />
       <Heading
         pb={16}
